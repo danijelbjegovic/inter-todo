@@ -11,7 +11,7 @@
             <tbody>
 
 
-                <task-component></task-component>
+                <task-component v-for="task in tasks" :key="task.id" :task="task"></task-component>
 
 
                 <tr>
@@ -42,6 +42,11 @@ import TaskComponent from './Task.vue'
 export default {
     data(){
         return{
+            tasks: [
+                {id:1, title: 'task1', priority: 'low'},
+                {id:2, title: 'task2', priority: 'high'},
+                {id:2, title: 'task2', priority: 'high'}
+            ],
             message: 'Hello from here....'
         }
     },

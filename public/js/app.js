@@ -47273,7 +47273,7 @@ exports = module.exports = __webpack_require__(42)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -47782,6 +47782,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            tasks: [{ id: 1, title: 'task1', priority: 'low' }, { id: 2, title: 'task2', priority: 'high' }, { id: 2, title: 'task2', priority: 'high' }],
             message: 'Hello from here....'
         };
     },
@@ -47801,7 +47802,17 @@ var render = function() {
     _c("table", { staticClass: "table" }, [
       _vm._m(0),
       _vm._v(" "),
-      _c("tbody", [_c("task-component"), _vm._v(" "), _vm._m(1)], 1)
+      _c(
+        "tbody",
+        [
+          _vm._l(_vm.tasks, function(task) {
+            return _c("task-component", { key: task.id, attrs: { task: task } })
+          }),
+          _vm._v(" "),
+          _vm._m(1)
+        ],
+        2
+      )
     ])
   ])
 }
@@ -47977,7 +47988,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['task']
+});
 
 /***/ }),
 /* 56 */
@@ -47987,19 +48000,21 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("tr", [
+    _c("td", [_vm._v(_vm._s(_vm.task.title))]),
+    _vm._v(" "),
+    _c("td", [_vm._v(_vm._s(_vm.task.priority))]),
+    _vm._v(" "),
+    _vm._m(0)
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("td", [_vm._v("test")]),
-      _vm._v(" "),
-      _c("td", [_vm._v("test")]),
-      _vm._v(" "),
-      _c("td", [_vm._v("test")])
+    return _c("td", [
+      _c("button", { staticClass: "btn btn-danger" }, [_vm._v("remove")])
     ])
   }
 ]
