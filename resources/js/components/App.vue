@@ -42,13 +42,23 @@ import TaskComponent from './Task.vue'
 export default {
     data(){
         return{
-            tasks: [
-                {id:1, title: 'task1', priority: 'low'},
-                {id:2, title: 'task2', priority: 'high'},
-                {id:2, title: 'task2', priority: 'high'}
-            ],
+            tasks: [],
             message: 'Hello from here....'
         }
+    },
+    methods: {
+        getTasks(){
+            axios.get('/api/tasks')
+            .then(res => {
+                this.tasks = res.data
+            })
+            .catch(err => {
+                console.log(res)
+            })
+        } 
+    },
+    created(){
+        this.getTasks()
     },
     components:{TaskComponent}
 }
