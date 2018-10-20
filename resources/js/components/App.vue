@@ -1,5 +1,8 @@
 <template>
     <div class="app-component">
+        <loading :active.sync="isLoading" 
+        :is-full-page="fullPage"></loading>
+
         <table class="table">
             <thead>
                 <tr>
@@ -22,7 +25,7 @@
                 <tr>
 
                     <td>
-                        <input v-model="task.title" class="form-control" type="text" id="task">
+                        <input v-model="task.title" class="form-control" type="text" placeholder="Task title" id="task">
                     </td>
 
                     <td>
@@ -45,11 +48,18 @@
 
 <script>
 import TaskComponent from './Task.vue'
+// Import component
+import Loading from 'vue-loading-overlay';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
+
 export default {
     data(){
         return{
             tasks: [],
-            task: {title: '', priority: ''}
+            task: {title: '', priority: ''},
+            isLoading: false,
+            fullPage: true
         }
     },
     methods: {
@@ -69,28 +79,32 @@ export default {
         },
         store(){
             if(this.checkInputs()){
+                this.isLoading = true;
                 axios.post('/api/tasks', this.task)
                 .then(res =>{
                     this.tasks.push(res.data)
                     this.task.title = ""
                     //this.task.priority = "undefined"
+                    this.isLoading = false;
                 })
             }
 
         },
         remove(id){
             //console.log(`I got the data ${id}`)
+            this.isLoading = true
             axios.delete(`/api/tasks/${id}`)
             .then(() =>{
                 let index = this.tasks.findIndex(task => task.id === id)
                 this.tasks.splice(index, 1);
+                this.isLoading = false
             })
         }
     },
     created(){
         this.getTasks()
     },
-    components:{TaskComponent}
+    components:{TaskComponent, Loading}
 }
 </script>
 
