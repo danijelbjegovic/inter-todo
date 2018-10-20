@@ -11,24 +11,30 @@
             <tbody>
 
 
-                <task-component v-for="task in tasks" :key="task.id" :task="task"></task-component>
+                <task-component 
+                v-for="task in tasks" 
+                :key="task.id" 
+                :task="task" 
+                @delete="remove"
+                ></task-component>
 
 
                 <tr>
 
                     <td>
-                        <input class="form-control" type="text" id="task">
+                        <input v-model="task.title" class="form-control" type="text" id="task">
                     </td>
 
                     <td>
-                        <select name="" id="select" class="form-control">
-                            <option value="">Low</option>
-                            <option value="">Medium</option>
-                            <option value="">High</option>
+                        <select v-model="task.priority" name="" id="select" class="form-control">
+                            <option value="" selected disabled hidden>Choose here</option>
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
                         </select>
                     </td>
                     <td>
-                        <button class="btn btn-primary">Add</button>
+                        <button @click="store" class="btn btn-primary">Add</button>
                     </td>
                 </tr>
             </tbody>
@@ -43,7 +49,7 @@ export default {
     data(){
         return{
             tasks: [],
-            message: 'Hello from here....'
+            task: {title: '', priority: ''}
         }
     },
     methods: {
@@ -55,7 +61,31 @@ export default {
             .catch(err => {
                 console.log(res)
             })
-        } 
+        },
+        checkInputs(){
+            if(this.task.title && this.task.priority){
+                return true
+            }
+        },
+        store(){
+            if(this.checkInputs()){
+                axios.post('/api/tasks', this.task)
+                .then(res =>{
+                    this.tasks.push(res.data)
+                    this.task.title = ""
+                    //this.task.priority = "undefined"
+                })
+            }
+
+        },
+        remove(id){
+            //console.log(`I got the data ${id}`)
+            axios.delete(`/api/tasks/${id}`)
+            .then(() =>{
+                let index = this.tasks.findIndex(task => task.id === id)
+                this.tasks.splice(index, 1);
+            })
+        }
     },
     created(){
         this.getTasks()

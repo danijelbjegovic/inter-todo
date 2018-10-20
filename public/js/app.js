@@ -47692,7 +47692,7 @@ exports = module.exports = __webpack_require__(11)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -47777,13 +47777,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             tasks: [],
-            message: 'Hello from here....'
+            task: { title: '', priority: '' }
         };
     },
 
@@ -47795,6 +47801,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this.tasks = res.data;
             }).catch(function (err) {
                 console.log(res);
+            });
+        },
+        checkInputs: function checkInputs() {
+            if (this.task.title && this.task.priority) {
+                return true;
+            }
+        },
+        store: function store() {
+            var _this2 = this;
+
+            if (this.checkInputs()) {
+                axios.post('/api/tasks', this.task).then(function (res) {
+                    _this2.tasks.push(res.data);
+                    _this2.task.title = "";
+                    //this.task.priority = "undefined"
+                });
+            }
+        },
+        remove: function remove(id) {
+            var _this3 = this;
+
+            //console.log(`I got the data ${id}`)
+            axios.delete('/api/tasks/' + id).then(function () {
+                var index = _this3.tasks.findIndex(function (task) {
+                    return task.id === id;
+                });
+                _this3.tasks.splice(index, 1);
             });
         }
     },
@@ -47891,7 +47924,7 @@ exports = module.exports = __webpack_require__(11)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -47913,7 +47946,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['task']
+    props: ['task'],
+    methods: {
+        remove: function remove() {
+            this.$emit('delete', this.task.id);
+        }
+    }
 });
 
 /***/ }),
@@ -47929,19 +47967,16 @@ var render = function() {
     _vm._v(" "),
     _c("td", [_vm._v(_vm._s(_vm.task.priority))]),
     _vm._v(" "),
-    _vm._m(0)
+    _c("td", [
+      _c(
+        "button",
+        { staticClass: "btn btn-danger", on: { click: _vm.remove } },
+        [_vm._v("remove")]
+      )
+    ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("button", { staticClass: "btn btn-danger" }, [_vm._v("remove")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -47967,10 +48002,103 @@ var render = function() {
         "tbody",
         [
           _vm._l(_vm.tasks, function(task) {
-            return _c("task-component", { key: task.id, attrs: { task: task } })
+            return _c("task-component", {
+              key: task.id,
+              attrs: { task: task },
+              on: { delete: _vm.remove }
+            })
           }),
           _vm._v(" "),
-          _vm._m(1)
+          _c("tr", [
+            _c("td", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.task.title,
+                    expression: "task.title"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text", id: "task" },
+                domProps: { value: _vm.task.title },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.task, "title", $event.target.value)
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.task.priority,
+                      expression: "task.priority"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { name: "", id: "select" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.task,
+                        "priority",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "option",
+                    {
+                      attrs: {
+                        value: "",
+                        selected: "",
+                        disabled: "",
+                        hidden: ""
+                      }
+                    },
+                    [_vm._v("Choose here")]
+                  ),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("Low")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("Medium")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("High")])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "button",
+                { staticClass: "btn btn-primary", on: { click: _vm.store } },
+                [_vm._v("Add")]
+              )
+            ])
+          ])
         ],
         2
       )
@@ -47989,37 +48117,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Priority")]),
         _vm._v(" "),
         _c("th", [_vm._v("Action")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("td", [
-        _c("input", {
-          staticClass: "form-control",
-          attrs: { type: "text", id: "task" }
-        })
-      ]),
-      _vm._v(" "),
-      _c("td", [
-        _c(
-          "select",
-          { staticClass: "form-control", attrs: { name: "", id: "select" } },
-          [
-            _c("option", { attrs: { value: "" } }, [_vm._v("Low")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "" } }, [_vm._v("Medium")]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "" } }, [_vm._v("High")])
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      _c("td", [
-        _c("button", { staticClass: "btn btn-primary" }, [_vm._v("Add")])
       ])
     ])
   }
